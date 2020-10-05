@@ -8,14 +8,14 @@ class ColorPicker extends Component {
     };
   }
 
+  setActiveColor(color) {
+    this.props.onReceiveColor(color);
+  }
+
   showColor(color) {
     return {
       backgroundColor: color,
     };
-  }
-
-  setActiveColor(color) {
-    this.props.onReceiveColor(color);
   }
 
   render() {
@@ -26,7 +26,7 @@ class ColorPicker extends Component {
           style={this.showColor(color)}
           className={this.props.color === color ? 'active' : ''}
           onClick={() => this.setActiveColor(color)}
-        ></span>
+        />
       );
     });
     return (

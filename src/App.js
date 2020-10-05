@@ -1,113 +1,68 @@
 import React, { Component } from 'react';
-import Header from './components/Header';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: [
-        {
-          id: 1,
-          name: 'Iphone 11',
-          price: '200000000',
-          image:
-            'https://cdn.tgdd.vn/Products/Images/42/153856/iphone-11-xanh-la-1-org.jpg',
-          status: true,
-        },
-        {
-          id: 2,
-          name: 'Galaxy S20',
-          price: '180000000',
-          image:
-            'https://cdn.tgdd.vn/Products/Images/42/153856/iphone-11-xanh-la-1-org.jpg',
-          status: true,
-        },
-        {
-          id: 3,
-          name: 'Note 20',
-          price: '240000000',
-          image:
-            'https://cdn.tgdd.vn/Products/Images/42/153856/iphone-11-xanh-la-1-org.jpg',
-          status: true,
-        },
-      ],
-      isActive: true,
+      username: '',
+      password: '',
     };
-    this.onSetState = this.onSetState.bind(this);
+    this.onHandleChange = this.onHandleChange.bind(this);
+    this.onHandleSubmit = this.onHandleSubmit.bind(this);
   }
 
-  onSetState() {
-    // if (this.state.isActive) {
-    //   this.setState({
-    //     isActive: false
-    //   });
-    // }else{
-    //   this.setState({
-    //     isActive: true
-    //   });
-    // }
+  onHandleChange(event) {
+    const target = event.target;
+    const name = target.name;
+    const value = target.value;
     this.setState({
-      isActive: !this.state.isActive,
+      [name]: value,
     });
+  }
+
+  onHandleSubmit(event) {
+    event.preventDefault();
+    console.log(this.state);
   }
 
   render() {
-    const elements = this.state.products.map((product, index) => {
-      let result = '';
-      if (product.status)
-        result = (
-          <tr key={product.id}>
-            <td>{index + 1}</td>
-            <td>{product.name}</td>
-            <td>
-              <span className="label label-success">{product.price}</span>
-            </td>
-          </tr>
-        );
-      return result;
-    });
     return (
-      <div>
-        <Header />
+      <div className="container">
         <div className="row">
-          <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div className="panel panel-info">
+          <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+            <div className="panel panel-primary">
               <div className="panel-heading">
-                <h3 className="panel-title">Panel title</h3>
+                <h3 className="panel-title">Tiêu đề</h3>
               </div>
               <div className="panel-body">
-                <div className="form-group">
-                  <label>Nhập sản phẩm</label>
-                  <input type="text" className="form-control" />
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={this.onAddProduct}
-                >
-                  Đồng ý
-                </button>
+                <form onSubmit={this.onHandleSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="">Tên đăng nhập</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="username"
+                      onChange={this.onHandleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="">Mật khẩu</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="password"
+                      onChange={this.onHandleChange}
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary">
+                    OK
+                  </button>
+                  <button type="reset" className="btn btn-danger">
+                    Xóa
+                  </button>
+                </form>
               </div>
             </div>
-          </div>
-          <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <table className="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th>STT</th>
-                  <th>Tên SP</th>
-                  <th>Giá SP</th>
-                </tr>
-              </thead>
-              <tbody>{elements}</tbody>
-            </table>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={this.onSetState}
-            >
-              Active: {this.state.isActive ? 'true' : 'false'}
-            </button>
           </div>
         </div>
       </div>

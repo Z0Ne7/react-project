@@ -19,29 +19,31 @@ class TaskForm extends Component {
       });
     }
   }
-  componentWillReceiveProps(nextProps){
+
+  componentWillReceiveProps(nextProps) {
     if (nextProps && nextProps.task) {
       this.setState({
         id: nextProps.task.id,
         name: nextProps.task.name,
         status: nextProps.task.status,
       });
-    }else if(!nextProps.task){
+    } else if (!nextProps.task) {
       this.setState({
         id: '',
-      name: '',
-      status: false,
-    });
+        name: '',
+        status: false,
+      });
     }
   }
+
   onCloseForm = () => {
     this.props.onCloseForm();
   };
 
   onChange = event => {
-    const target = event.target;
-    const name = target.name;
-    let value = target.value;
+    const { target } = event;
+    const { name } = target;
+    let { value } = target;
     if (name === 'status') {
       value = target.value === 'true' ? true : false;
     }
@@ -107,7 +109,8 @@ class TaskForm extends Component {
                 Lưu lại
               </button>
               &nbsp;
-              <button type="button"
+              <button
+                type="button"
                 className="btn btn-danger"
                 onClick={this.onClear}
               >

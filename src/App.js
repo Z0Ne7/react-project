@@ -11,6 +11,11 @@ class App extends Component {
       tasks: [],
       isDisplayed: false,
       taskEditing: null,
+      filter: {
+        name: '',
+        status: -1,
+      },
+      keyword: '',
     };
   }
 
@@ -18,7 +23,7 @@ class App extends Component {
     if (localStorage && localStorage.getItem('tasks')) {
       const tasks = JSON.parse(localStorage.getItem('tasks'));
       this.setState({
-        tasks: tasks,
+        tasks,
       });
     }
   }
@@ -82,7 +87,7 @@ class App extends Component {
     }
 
     this.setState({
-      tasks: tasks,
+      tasks,
       taskEditing: null,
     });
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -105,7 +110,7 @@ class App extends Component {
     if (index !== -1) {
       tasks[index].status = !tasks[index].status;
       this.setState({
-        tasks: tasks,
+        tasks,
       });
       localStorage.setItem('tasks', JSON.stringify(tasks));
     }
@@ -117,7 +122,7 @@ class App extends Component {
     if (index !== -1) {
       tasks.splice(index, 1);
       this.setState({
-        tasks: tasks,
+        tasks,
       });
       localStorage.setItem('tasks', JSON.stringify(tasks));
     }
@@ -129,13 +134,49 @@ class App extends Component {
     const index = this.findIndex(id);
     const taskEditing = tasks[index];
     this.setState({
-      taskEditing: taskEditing,
+      taskEditing,
     });
     this.onShowingForm();
   };
 
+  onFilter = (filterName, filterStatus) => {
+    filterStatus = parseInt(filterStatus, 10);
+    this.setState({
+      filter: {
+        name: filterName.toLowerCase(),
+        status: filterStatus,
+      },
+    });
+  };
+
+  onSearch = keyword => {
+    this.setState({
+      keyword,
+    });
+  };
+
   render() {
-    const { tasks, isDisplayed, taskEditing } = this.state; // const tasks = this.state.tasks
+    const { isDisplayed, taskEditing, filter, keyword } = this.state; // const tasks = this.state.tasks
+    let { tasks } = this.state;
+    if (filter) {
+      if (filter.name) {
+        tasks = tasks.filter(task => {
+          return task.name.toLowerCase().indexOf(filter.name) !== -1;
+        });
+      }
+      tasks = tasks.filter(task => {
+        if (filter.status === -1) {
+          return task;
+        } else {
+          return task.status === (filter.status === 1 ? true : false);
+        }
+      });
+    }
+    if (keyword) {
+      tasks = tasks.filter(task => {
+        return task.name.toLowerCase().indexOf(keyword) !== -1;
+      });
+    }
     const elementTaskForm = isDisplayed ? (
       <TaskForm
         onSubmit={this.onSubmit}
@@ -171,7 +212,7 @@ class App extends Component {
             >
               Thêm công việc
             </button>
-            <Control />
+            <Control onSearch={this.onSearch} />
 
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -180,6 +221,7 @@ class App extends Component {
                   onUpdateStatus={this.onUpdateStatus}
                   onDelete={this.onDelete}
                   onUpdate={this.onUpdate}
+                  onFilter={this.onFilter}
                 />
               </div>
             </div>

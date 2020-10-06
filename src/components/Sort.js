@@ -27,10 +27,14 @@ class Sort extends Component {
           </li>
           <li role="separator" className="divider"></li>
           <li>
-            <a href="/" role="button">Trạng Thái Kích Hoạt</a>
+            <a href="/" role="button">
+              Trạng Thái Kích Hoạt
+            </a>
           </li>
           <li>
-            <a href="/" role="button">Trạng Thái Ẩn</a>
+            <a href="/" role="button">
+              Trạng Thái Ẩn
+            </a>
           </li>
         </ul>
       </div>

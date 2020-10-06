@@ -58,7 +58,6 @@ class TaskForm extends Component {
   };
 
   onClear = () => {
-    console.log('Huy');
     this.setState({
       id: '',
       name: '',
@@ -108,7 +107,7 @@ class TaskForm extends Component {
                 Lưu lại
               </button>
               &nbsp;
-              <button
+              <button type="button"
                 className="btn btn-danger"
                 onClick={this.onClear}
               >

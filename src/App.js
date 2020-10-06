@@ -46,18 +46,17 @@ class App extends Component {
   }
 
   onAddingItem = () => {
-    if(this.state.isDisplayed && this.state.taskEditing !== null){
+    if (this.state.isDisplayed && this.state.taskEditing !== null) {
       this.setState({
-      isDisplayed: true,
-      taskEditing: null,
-    });
-    }else{
+        isDisplayed: true,
+        taskEditing: null,
+      });
+    } else {
       this.setState({
-      isDisplayed: !this.state.isDisplayed,
-      taskEditing: null,
-    });
+        isDisplayed: !this.state.isDisplayed,
+        taskEditing: null,
+      });
     }
-
   };
 
   onCloseForm = () => {

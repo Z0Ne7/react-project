@@ -1,128 +1,187 @@
 import React, { Component } from 'react';
+import './App.css';
+import TaskForm from './components/TaskForm';
+import TaskList from './components/TaskList';
+import Control from './components/Control';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'Nhập tên đăng nhập',
-      password: '',
-      description: 'Nhập mô tả',
-      gender: 2,
-      language: 'vi',
-      status: true,
+      tasks: [],
+      isDisplayed: false,
+      taskEditing: null,
     };
-    this.onHandleChange = this.onHandleChange.bind(this);
-    this.onHandleSubmit = this.onHandleSubmit.bind(this);
   }
 
-  onHandleChange(event) {
-    const target = event.target;
-    const name = target.name;
-    const value = target.type === 'checkbox' ? target.checked : target.name;
-    this.setState({
-      [name]: value,
+  componentDidMount() {
+    if (localStorage && localStorage.getItem('tasks')) {
+      const tasks = JSON.parse(localStorage.getItem('tasks'));
+      this.setState({
+        tasks: tasks,
+      });
+    }
+  }
+
+  s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+
+  generateID() {
+    return (
+      this.s4() +
+      this.s4() +
+      '-' +
+      this.s4() +
+      this.s4() +
+      '-' +
+      this.s4() +
+      this.s4() +
+      '-' +
+      this.s4() +
+      this.s4()
+    );
+  }
+
+  onAddingItem = () => {
+    if(this.state.isDisplayed && this.state.taskEditing !== null){
+      this.setState({
+      isDisplayed: true,
+      taskEditing: null,
     });
-  }
+    }else{
+      this.setState({
+      isDisplayed: !this.state.isDisplayed,
+      taskEditing: null,
+    });
+    }
 
-  onHandleSubmit(event) {
-    event.preventDefault();
-    console.log(this.state);
-  }
+  };
+
+  onCloseForm = () => {
+    this.setState({
+      isDisplayed: false,
+    });
+  };
+
+  onShowingForm = () => {
+    this.setState({
+      isDisplayed: true,
+    });
+  };
+
+  onSubmit = data => {
+    const { tasks } = this.state;
+    if (data.id === '') {
+      data.id = this.generateID();
+      tasks.push(data);
+    } else {
+      const index = this.findIndex(data.id);
+      tasks[index] = data;
+    }
+
+    this.setState({
+      tasks: tasks,
+      taskEditing: null,
+    });
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  };
+
+  findIndex = id => {
+    const { tasks } = this.state;
+    let result = -1;
+    tasks.forEach((task, index) => {
+      if (task.id === id) {
+        result = index;
+      }
+    });
+    return result;
+  };
+
+  onUpdateStatus = id => {
+    const { tasks } = this.state;
+    const index = this.findIndex(id);
+    if (index !== -1) {
+      tasks[index].status = !tasks[index].status;
+      this.setState({
+        tasks: tasks,
+      });
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+  };
+
+  onDelete = id => {
+    const { tasks } = this.state;
+    const index = this.findIndex(id);
+    if (index !== -1) {
+      tasks.splice(index, 1);
+      this.setState({
+        tasks: tasks,
+      });
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+    this.onCloseForm();
+  };
+
+  onUpdate = id => {
+    const { tasks } = this.state;
+    const index = this.findIndex(id);
+    const taskEditing = tasks[index];
+    this.setState({
+      taskEditing: taskEditing,
+    });
+    this.onShowingForm();
+  };
 
   render() {
+    const { tasks, isDisplayed, taskEditing } = this.state; // const tasks = this.state.tasks
+    const elementTaskForm = isDisplayed ? (
+      <TaskForm
+        onSubmit={this.onSubmit}
+        onCloseForm={this.onCloseForm}
+        task={taskEditing}
+      />
+    ) : (
+      ''
+    );
     return (
       <div className="container">
+        <div className="text-center">
+          <h1>Quản Lý Công Việc</h1>
+          <hr />
+        </div>
         <div className="row">
-          <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-            <div className="panel panel-primary">
-              <div className="panel-heading">
-                <h3 className="panel-title">Tiêu đề</h3>
-              </div>
-              <div className="panel-body">
-                <form onSubmit={this.onHandleSubmit}>
-                  <div className="form-group">
-                    <label htmlFor="">Tên đăng nhập</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="username"
-                      onChange={this.onHandleChange}
-                      value={this.state.username}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="">Mật khẩu</label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      name="password"
-                      onChange={this.onHandleChange}
-                      value={this.state.password}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="">Mô tả</label>
-                    <textarea
-                      name="description"
-                      className="form-control"
-                      rows="3"
-                      onChange={this.onHandleChange}
-                      value={this.state.description}
-                    />
-                  </div>
-                  <select
-                    name="gender"
-                    className="form-control"
-                    value={this.state.gender}
-                    onChange={this.onHandleChange}
-                  >
-                    <option value={0}>Nữ</option>
-                    <option value={1}>Nam</option>
-                    <option value={2}>Khác</option>
-                  </select>
-                  <div className="form-group">
-                    <label htmlFor="">Ngôn ngữ</label>
-                    <div className="radio">
-                      <label>
-                        <input
-                          type="radio"
-                          name="language"
-                          value="vi"
-                          onChange={this.onHandleChange}
-                        />
-                        Tiếng Việt
-                      </label>
-                      <br />
-                      <label>
-                        <input
-                          type="radio"
-                          name="language"
-                          value="en"
-                          onChange={this.onHandleChange}
-                        />
-                        English
-                      </label>
-                    </div>
-                  </div>
-                  <div className="checkbox">
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={true}
-                        name="status"
-                        onChange={this.onHandleChange}
-                        checked={this.state.status === true}
-                      />
-                      Trạng thái
-                    </label>
-                  </div>
-                  <button type="submit" className="btn btn-primary">
-                    OK
-                  </button>
-                  <button type="reset" className="btn btn-danger">
-                    Xóa
-                  </button>
-                </form>
+          <div
+            className={isDisplayed ? 'col-xs-4 col-sm-4 col-md-4 col-lg-4' : ''}
+          >
+            {elementTaskForm}
+          </div>
+          <div
+            className={
+              isDisplayed
+                ? 'col-xs-8 col-sm-8 col-md-8 col-lg-8'
+                : 'col-xs-12 col-sm-12 col-md-12 col-lg-12'
+            }
+          >
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.onAddingItem}
+            >
+              Thêm công việc
+            </button>
+            <Control />
+
+            <div className="row mt-15">
+              <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <TaskList
+                  tasks={tasks}
+                  onUpdateStatus={this.onUpdateStatus}
+                  onDelete={this.onDelete}
+                  onUpdate={this.onUpdate}
+                />
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import './App.css';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import Control from './components/TaskControl';
+import demo from './training/demo';
 
 class App extends Component {
   constructor(props) {
@@ -16,6 +17,8 @@ class App extends Component {
         status: -1,
       },
       keyword: '',
+      sortBy: 'name',
+      sortValue: 1,
     };
   }
 
@@ -155,8 +158,22 @@ class App extends Component {
     });
   };
 
+  onSort = (sortBy, sortValue) => {
+    this.setState({
+        sortBy,
+        sortValue,
+    });
+  };
+
   render() {
-    const { isDisplayed, taskEditing, filter, keyword } = this.state; // const tasks = this.state.tasks
+    const {
+      isDisplayed,
+      taskEditing,
+      filter,
+      keyword,
+      sortBy,
+      sortValue,
+    } = this.state; // const tasks = this.state.tasks
     let { tasks } = this.state;
     if (filter) {
       if (filter.name) {
@@ -177,6 +194,26 @@ class App extends Component {
         return task.name.toLowerCase().indexOf(keyword) !== -1;
       });
     }
+    if(sortBy === 'name'){
+      tasks.sort((a, b) => {
+        if(a.name > b.name)
+          return sortValue;
+        else if( a.name < b.name )
+          return -sortValue;
+        else
+          return 0;
+    });
+    }else{
+      tasks.sort((a, b) => {
+        if(a.status > b.status)
+          return -sortValue;
+        else if( a.status < b.status )
+          return sortValue;
+        else
+          return 0;
+    });
+    }
+
     const elementTaskForm = isDisplayed ? (
       <TaskForm
         onSubmit={this.onSubmit}
@@ -212,7 +249,12 @@ class App extends Component {
             >
               Thêm công việc
             </button>
-            <Control onSearch={this.onSearch} />
+            <Control
+              onSearch={this.onSearch}
+              onSort={this.onSort}
+              sortBy={sortBy}
+              sortValue={sortValue}
+            />
 
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

@@ -53,31 +53,6 @@ class App extends Component {
     return result;
   };
 
-  onUpdateStatus = id => {
-    const { tasks } = this.state;
-    const index = this.findIndex(id);
-    if (index !== -1) {
-      tasks[index].status = !tasks[index].status;
-      this.setState({
-        tasks,
-      });
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-  };
-
-  onDelete = id => {
-    const { tasks } = this.state;
-    const index = this.findIndex(id);
-    if (index !== -1) {
-      tasks.splice(index, 1);
-      this.setState({
-        tasks,
-      });
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-    this.onCloseForm();
-  };
-
   onUpdate = id => {
     const { tasks } = this.state;
     const index = this.findIndex(id);
@@ -112,7 +87,7 @@ class App extends Component {
   };
 
   render() {
-    const { taskEditing, filter, keyword, sortBy, sortValue } = this.state; // const tasks = this.state.tasks
+    const { taskEditing, sortBy, sortValue } = this.state; // const tasks = this.state.tasks
     var { isDisplayForm } = this.props;
     // if (filter) {
     //   if (filter.name) {
@@ -153,11 +128,6 @@ class App extends Component {
     // });
     // }
 
-    const elementTaskForm = isDisplayForm ? (
-      <TaskForm task={taskEditing} />
-    ) : (
-      ''
-    );
     return (
       <div className="container">
         <div className="text-center">
@@ -170,7 +140,7 @@ class App extends Component {
               isDisplayForm ? 'col-xs-4 col-sm-4 col-md-4 col-lg-4' : ''
             }
           >
-            {elementTaskForm}
+            <TaskForm task={taskEditing} />
           </div>
           <div
             className={
@@ -196,8 +166,6 @@ class App extends Component {
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <TaskList
-                  onUpdateStatus={this.onUpdateStatus}
-                  onDelete={this.onDelete}
                   onUpdate={this.onUpdate}
                   onFilter={this.onFilter}
                 />

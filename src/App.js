@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
-import Control from './components/Control';
+import Control from './components/TaskControl';
 
 class App extends Component {
   constructor(props) {

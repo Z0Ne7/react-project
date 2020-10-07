@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Search from './Search';
-import Sort from './Sort';
+import Search from './TaskSearchControl';
+import Sort from './TaskSortControl';
 
 class Control extends Component {
   render() {

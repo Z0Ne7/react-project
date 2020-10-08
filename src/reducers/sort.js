@@ -1,18 +1,17 @@
 import * as types from '../constants/ActionTypes';
 
 var initialState = {
-  id: '',
-  name: '',
-  status: false,
+  by: 'name',
+  value: 1,
 };
 
 var myReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.EDIT_TASK:
-    return action.task;
-    case types.CLEAR_TASK:
-    state = initialState;
-    return state;
+    case types.SORT:
+    return {
+      by: action.sort.by,
+      value: action.sort.value,
+    };
     default:
       return state;
   }

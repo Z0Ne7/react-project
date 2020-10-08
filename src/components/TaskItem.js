@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from './../actions';
+import * as actions from '../actions';
 
 class TaskItem extends Component {
   onUpdateStatus = () => {
@@ -41,7 +41,8 @@ class TaskItem extends Component {
             className="btn btn-warning"
             onClick={this.onEditTask}
           >
-            <span className="fa fa-pencil mr-5"></span>Sửa
+            <i className="fa fa-pencil mr-5" />
+            Sửa
           </button>
           &nbsp;
           <button
@@ -49,7 +50,8 @@ class TaskItem extends Component {
             className="btn btn-danger"
             onClick={this.onDelete}
           >
-            <span className="fa fa-trash mr-5"></span>Xóa
+            <i className="fa fa-trash mr-5" />
+            Xóa
           </button>
         </td>
       </tr>
@@ -58,17 +60,15 @@ class TaskItem extends Component {
 }
 
 const mapStateToProps = state => {
-  return {
-
-  };
+  return {};
 };
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    onUpdateStatus: (id) => {
-      dispatch(actions.updateStatus(id));       
+    onUpdateStatus: id => {
+      dispatch(actions.updateStatus(id));
     },
-    onDeleteTask: (id) => {
+    onDeleteTask: id => {
       dispatch(actions.deleteTask(id));
     },
     onCloseForm: () => {
@@ -77,11 +77,10 @@ const mapDispatchToProps = (dispatch, props) => {
     onOpenForm: () => {
       dispatch(actions.openForm());
     },
-    onEditTask: (task) => {
+    onEditTask: task => {
       dispatch(actions.editTask(task));
-    }
+    },
   };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskItem);
-

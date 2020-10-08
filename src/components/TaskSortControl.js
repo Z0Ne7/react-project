@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
 
 class Sort extends Component {
   onClick = (sortBy, sortValue) => {
-    this.props.onSort(sortBy, sortValue);
-  }
+    this.props.onSort({
+      by: sortBy,
+      value: sortValue,
+    });
+  };
+
   render() {
     return (
       <div className="dropdown">
@@ -15,7 +21,7 @@ class Sort extends Component {
           aria-haspopup="true"
           aria-expanded="true"
         >
-          Sắp Xếp <span className="fa fa-caret-square-o-down ml-5"></span>
+          Sắp Xếp <span className="fa fa-caret-square-o-down ml-5" />
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
           <li onClick={() => this.onClick('name', 1)}>
@@ -45,4 +51,18 @@ class Sort extends Component {
   }
 }
 
-export default Sort;
+const mapStateToProps = state => {
+  return {
+    sort: state.sort,
+  };
+};
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    onSort: sort => {
+      dispatch(actions.sortTask(sort));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sort);

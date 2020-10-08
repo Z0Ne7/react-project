@@ -1,133 +1,24 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
-import './App.css';
-import TaskForm from './components/TaskForm';
-import TaskList from './components/TaskList';
-import Control from './components/TaskControl';
 import { connect } from 'react-redux';
 import * as actions from './actions';
+import './App.css';
+import Control from './components/TaskControl';
+import TaskForm from './components/TaskForm';
+import TaskList from './components/TaskList';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      taskEditing: null,
-      filter: {
-        name: '',
-        status: -1,
-      },
-      keyword: '',
-      sortBy: 'name',
-      sortValue: 1,
-    };
-  }
-
   onToggleForm = () => {
-    // if (this.state.isDisplayForm && this.state.taskEditing !== null) {
-    //   this.setState({
-    //     isDisplayForm: true,
-    //     taskEditing: null,
-    //   });
-    // } else {
-    //   this.setState({
-    //     isDisplayForm: !this.state.isDisplayForm,
-    //     taskEditing: null,
-    //   });
-    // }
-    this.props.onToggleForm();
-  };
-
-  onShowingForm = () => {
-    this.setState({
-      isDisplayForm: true,
-    });
-  };
-
-  findIndex = id => {
-    const { tasks } = this.state;
-    let result = -1;
-    tasks.forEach((task, index) => {
-      if (task.id === id) {
-        result = index;
-      }
-    });
-    return result;
-  };
-
-  onUpdate = id => {
-    const { tasks } = this.state;
-    const index = this.findIndex(id);
-    const taskEditing = tasks[index];
-    this.setState({
-      taskEditing,
-    });
-    this.onShowingForm();
-  };
-
-  onFilter = (filterName, filterStatus) => {
-    filterStatus = parseInt(filterStatus, 10);
-    this.setState({
-      filter: {
-        name: filterName.toLowerCase(),
-        status: filterStatus,
-      },
-    });
-  };
-
-  onSearch = keyword => {
-    this.setState({
-      keyword,
-    });
-  };
-
-  onSort = (sortBy, sortValue) => {
-    this.setState({
-      sortBy,
-      sortValue,
-    });
+    const { itemEditing } = this.props;
+    if (itemEditing && itemEditing.id === '') {
+      this.props.onToggleForm();
+    } else {
+      this.props.onClearTask();
+    }
   };
 
   render() {
-    const { taskEditing, sortBy, sortValue } = this.state; // const tasks = this.state.tasks
-    var { isDisplayForm } = this.props;
-    // if (filter) {
-    //   if (filter.name) {
-    //     tasks = tasks.filter(task => {
-    //       return task.name.toLowerCase().indexOf(filter.name) !== -1;
-    //     });
-    //   }
-    //   tasks = tasks.filter(task => {
-    //     if (filter.status === -1) {
-    //       return task;
-    //     } else {
-    //       return task.status === (filter.status === 1 ? true : false);
-    //     }
-    //   });
-    // }
-    // if (keyword) {
-    //   tasks = tasks.filter(task => {
-    //     return task.name.toLowerCase().indexOf(keyword) !== -1;
-    //   });
-    // }
-    // if(sortBy === 'name'){
-    //   tasks.sort((a, b) => {
-    //     if(a.name > b.name)
-    //       return sortValue;
-    //     else if( a.name < b.name )
-    //       return -sortValue;
-    //     else
-    //       return 0;
-    // });
-    // }else{
-    //   tasks.sort((a, b) => {
-    //     if(a.status > b.status)
-    //       return -sortValue;
-    //     else if( a.status < b.status )
-    //       return sortValue;
-    //     else
-    //       return 0;
-    // });
-    // }
-
+    const { isDisplayForm } = this.props;
     return (
       <div className="container">
         <div className="text-center">
@@ -140,7 +31,7 @@ class App extends Component {
               isDisplayForm ? 'col-xs-4 col-sm-4 col-md-4 col-lg-4' : ''
             }
           >
-            <TaskForm task={taskEditing} />
+            <TaskForm />
           </div>
           <div
             className={
@@ -156,19 +47,11 @@ class App extends Component {
             >
               Thêm công việc
             </button>
-            <Control
-              onSearch={this.onSearch}
-              onSort={this.onSort}
-              sortBy={sortBy}
-              sortValue={sortValue}
-            />
+            <Control />
 
             <div className="row mt-15">
               <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <TaskList
-                  onUpdate={this.onUpdate}
-                  onFilter={this.onFilter}
-                />
+                <TaskList />
               </div>
             </div>
           </div>
@@ -181,6 +64,7 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     isDisplayForm: state.isDisplayForm,
+    itemEditing: state.itemEditing,
   };
 };
 
@@ -189,7 +73,12 @@ const mapDispatchToProps = (dispatch, props) => {
     onToggleForm: () => {
       dispatch(actions.toggleForm());
     },
-
+    onClearTask: () => {
+      dispatch(actions.clearTask());
+    },
+    onOpenForm: () => {
+      dispatch(actions.openForm());
+    },
   };
 };
 
